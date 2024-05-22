@@ -1,0 +1,60 @@
+﻿@{
+
+}
+@model Agri_Energy_Connect.Models.ProductModel
+
+<div class="text-center">
+    <h1 class="display-4">Add a Product</h1>
+    <p>User ID: @ViewData["UserId"]</p>
+    <p>User Role: @ViewData["UserRole"]</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <p></p>
+    </div>
+    <div class="card-body">
+        <div class="row justify-content-center">
+            <div class="col-10">
+                <section>
+                    <form id="product" asp-action="CreateProduct" method="post">
+                        <h2>Enter the product details:</h2>
+                        <hr />
+                        <div class="form-floating mb-3">
+                            <input asp-for="Name" class="form-control" aria-required="true" placeholder="product name" />
+                            <label asp-for="Name" class="form-label">Product Name</label>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <select asp-for="Category" class="form-select" aria-label="category selection" aria-required="true">
+                                <option value="Fruits">Fruits</option>
+                                <option value="Vegetables">Vegetables</option>
+                                <option value="Herbs">Herbs</option>
+                                <option value="Dairy">Dairy</option>
+                                <option value="Meat and Poultry">Meat and Poultry</option>
+                                <option value="Grains and Legumes">Grains and Legumes</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <label asp-for="Category">Category</label>
+                            <span asp-validation-for="Category" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="ProductionDate" class="form-control" type="date" aria-required="true" placeholder="production date" value="@DateTime.Now.ToString("yyyy-MM-dd")" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            <label asp-for="ProductionDate" class="form-label">Production Date</label>
+                            <span asp-validation-for="ProductionDate" class="text-danger"></span>
+                        </div>
+                        <div>
+                            <button id="productSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Create</button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -3,6 +3,7 @@ using System;
 using Agri_Energy_Connect.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Agri_Energy_Connect.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    partial class AuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240522192810_CreateProductsTable")]
+    partial class CreateProductsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.18");
@@ -95,8 +98,7 @@ namespace Agri_Energy_Connect.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
+                    b.Property<decimal>("Category")
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
@@ -106,10 +108,6 @@ namespace Agri_Energy_Connect.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ProductionDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

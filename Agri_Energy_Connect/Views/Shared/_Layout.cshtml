@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Agri_Energy_Connect</title>
+    <title>@ViewData["Title"] Agri Energy</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Agri_Energy_Connect.styles.css" asp-append-version="true" />
@@ -13,12 +13,34 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="font-weight: bold; font-size: 1.5rem;">Agri Energy</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-row-reverse">
-                    <partial name="_LoginPartial.cshtml" />
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <div class="d-flex flex-column flex-sm-row w-100">
+                        @if (ViewData["UserRole"] != null && ViewData["UserRole"]?.ToString() == "Farmer")
+                        {
+                            <span class="nav-item mb-2 mb-sm-0 me-sm-2">
+                                <a class="nav-link" asp-area="" asp-controller="Farmer" asp-action="ViewProducts">My Products</a>
+                            </span>
+                            <span class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Farmer" asp-action="CreateProduct">Add Products</a>
+                            </span>
+                        }
+                        else if (ViewData["UserRole"] != null && ViewData["UserRole"]?.ToString() == "Employee")
+                        {
+                            <span class="nav-item mb-2 mb-sm-0 me-sm-2">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Farmers</a>
+                            </span>
+                            <span class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Add Farmer</a>
+                            </span>
+                        }
+                    </div>
+                    <div class="d-flex flex-column flex-sm-row">
+                        <partial name="_LoginPartial.cshtml" />
+                    </div>
                 </div>
             </div>
         </nav>
@@ -30,11 +52,11 @@
     </div>
 
     <footer class="border-top footer text-muted">
-    <div class="container">
-        <div class="footer-item">&copy; 2024 - Agri Energy - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></div>
-        <div class="footer-item">Created By: Ethan Schoonbee</div>
-    </div>
-</footer>
+        <div class="container">
+            <div class="footer-item">&copy; 2024 - Agri Energy - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></div>
+            <div class="footer-item">Created By: Ethan Schoonbee</div>
+        </div>
+    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

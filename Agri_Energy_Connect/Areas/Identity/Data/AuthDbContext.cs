@@ -1,4 +1,5 @@
 ﻿using Agri_Energy_Connect.Areas.Identity.Data;
+using Agri_Energy_Connect.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,8 @@ public class AuthDbContext : IdentityDbContext<ApplicationUser>
         : base(options)
     {
     }
+
+    public DbSet<ProductModel> Products { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

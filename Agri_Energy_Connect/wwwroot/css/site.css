@@ -57,3 +57,8 @@ body {
 .login-logout-card .card-body {
     padding: 10px 20px;
 }
+
+.nav-button {
+    font-size: 1.1rem;
+    color: #495057;
+}
