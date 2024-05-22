@@ -9,8 +9,14 @@
 {
     <li class="nav-item">
         <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button id="logout" type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to log out?');">Logout</button>
+                <button id="logout" type="submit" class="btn btn-danger" onclick="return customConfirm();">Logout</button>
         </form>
     </li>
 }
 </ul>
+
+<script>
+    function customConfirm() {
+        return confirm('return confirm('Are you sure you want to log out ? ');
+    }
+</script>

@@ -5,6 +5,7 @@
 
 <div class="text-center">
     <h1 class="display-4">My Products</h1>
+    <br />
     <p>User ID: @ViewData["UserId"]</p>
     <p>User Role: @ViewData["UserRole"]</p>
 </div>
@@ -30,7 +31,7 @@ else
                         </p>
                         <form asp-action="DeleteProduct" method="post" class="d-inline">
                             <input type="hidden" name="id" value="@product.Id" />
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this product?');">Delete</button>
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return customConfirm();">Delete</button>
                             @Html.AntiForgeryToken()
                         </form>
                     </div>
@@ -39,3 +40,9 @@ else
         }
     </div>
 }
+
+<script>
+    function customConfirm() {
+        return confirm('Are you sure you want to delete this product?');
+    }
+</script>
