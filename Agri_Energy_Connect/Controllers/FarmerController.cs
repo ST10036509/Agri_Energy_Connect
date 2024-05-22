@@ -4,6 +4,7 @@ using Agri_Energy_Connect.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Agri_Energy_Connect.Controllers
 {
@@ -91,8 +92,47 @@ namespace Agri_Energy_Connect.Controllers
                 ViewData["UserId"] = user.Id;
                 ViewData["UserFirstName"] = user.FirstName;
                 ViewData["UserRole"] = userRole;
+
+                var products = await _context.Products
+                .Where(p => p.UserId == user.Id)
+                .Select(p => new ProductViewModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Category = p.Category,
+                    ProductionDate = p.ProductionDate
+                })
+                .ToListAsync();
+
+                return View(products);
+            } else
+            {
+                return NotFound();
             }
-            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var product = await _context.Products
+                .FirstOrDefaultAsync(p => p.Id == id && p.UserId == user.Id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ViewProducts));
         }
     }
 }
