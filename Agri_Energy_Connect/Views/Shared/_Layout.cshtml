@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AgriEnergy</title>
+    <link rel="icon" href="~/images/agri_energy_logo_v1.1.svg" type="image/x-icon">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Agri_Energy_Connect.styles.css" asp-append-version="true" />
@@ -12,7 +13,10 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="font-weight: bold; font-size: 1.5rem;">AgriEnergy</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="font-weight: bold; font-size: 1.5rem;">
+                    <img src="~/images/agri_energy_logo_v1.1.svg" alt="SVG Image" asp-append-version="true" style="width: 50px; height: 50px; margin-bottom:3px">
+                    AgriEnergy
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -53,7 +57,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            <div class="footer-item">&copy; 2024 - Agri Energy - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></div>
+            <div class="footer-item">&copy; 2024 - AgriEnergy - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></div>
             <div class="footer-item">Created By: Ethan Schoonbee</div>
         </div>
     </footer>
