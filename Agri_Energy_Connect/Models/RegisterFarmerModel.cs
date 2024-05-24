@@ -1,42 +1,35 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Agri_Energy_Connect.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Agri_Energy_Connect.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Encodings.Web;
+using System.Text;
+using System.Threading.Tasks;
+using System.Security.Claims;
 
-namespace Agri_Energy_Connect.Areas.Identity.Pages.Account
+namespace Agri_Energy_Connect.Models
 {
-    public class RegisterModel : PageModel
+    [Authorize(Roles = "Employee")]
+    public class RegisterFarmerModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
-        private readonly ILogger<RegisterModel> _logger;
+        private readonly ILogger<RegisterFarmerModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public RegisterModel(
+        public RegisterFarmerModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger,
+            ILogger<RegisterFarmerModel> logger,
             IEmailSender emailSender,
             RoleManager<IdentityRole> roleManager)
         {
@@ -114,10 +107,6 @@ namespace Agri_Energy_Connect.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                Response.Redirect("/");
-            }
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
@@ -132,7 +121,7 @@ namespace Agri_Energy_Connect.Areas.Identity.Pages.Account
 
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
-                user.EmployeeId = "";
+                user.EmployeeId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -154,13 +143,13 @@ namespace Agri_Energy_Connect.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    var employeeRole = "Employee";
+                    var farmerRole = "Farmer";
                     // Assign role to user
-                    if (!await _roleManager.RoleExistsAsync(employeeRole))
+                    if (!await _roleManager.RoleExistsAsync(farmerRole))
                     {
-                        await _roleManager.CreateAsync(new IdentityRole(employeeRole));
+                        await _roleManager.CreateAsync(new IdentityRole(farmerRole));
                     }
-                    await _userManager.AddToRoleAsync(user, employeeRole);
+                    await _userManager.AddToRoleAsync(user, farmerRole);
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -204,5 +193,6 @@ namespace Agri_Energy_Connect.Areas.Identity.Pages.Account
             }
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }
+
     }
 }

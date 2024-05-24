@@ -19,5 +19,7 @@ public class ApplicationUser : IdentityUser
     [Column(TypeName = "nvarchar(100)")]
     public string LastName { get; set; }
 
+    public string EmployeeId { get; set; }
+
 }
 

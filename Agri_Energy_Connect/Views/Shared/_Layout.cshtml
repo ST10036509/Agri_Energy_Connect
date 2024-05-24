@@ -35,10 +35,10 @@
                         else if (ViewData["UserRole"] != null && ViewData["UserRole"]?.ToString() == "Employee")
                         {
                             <span class="nav-item mb-2 mb-sm-0 me-sm-2">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Farmers</a>
+                                <a class="nav-link" asp-area="" asp-controller="Employee" asp-action="ViewFarmers">My Farmers</a>
                             </span>
                             <span class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Add Farmer</a>
+                                <a class="nav-link" asp-area="" asp-controller="Employee" asp-action="CreateFarmer">Add Farmers</a>
                             </span>
                         }
                     </div>
