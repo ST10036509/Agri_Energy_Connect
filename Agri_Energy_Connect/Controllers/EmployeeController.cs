@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -82,7 +83,7 @@ namespace Agri_Energy_Connect.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateFarmer(RegisterFarmerModel.InputModel Input, string returnUrl = null)
+        public async Task<IActionResult> CreateFarmer(InputModel Input, string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
 
@@ -156,6 +157,35 @@ namespace Agri_Energy_Connect.Controllers
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }
 
+        [BindProperty]
+        public InputModel Input { get; set; }
+    }
+
+    public class InputModel
+    {
+        [DataType(DataType.Text)]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
+        public string Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; }
     }
 }
 
