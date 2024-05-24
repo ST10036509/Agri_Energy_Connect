@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
@@ -58,10 +59,24 @@ namespace Agri_Energy_Connect.Controllers
                 ViewData["UserId"] = user.Id;
                 ViewData["UserFirstName"] = user.FirstName;
                 ViewData["UserRole"] = userRole;
-            }
 
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
+                // Fetch farmers associated with the current employee
+                var farmers = await _context.Farmers
+                                            .Where(f => f.EmployeeId == user.Id)
+                                            .Select(f => new FarmerViewModel
+                                            {
+                                                Id = f.Id,
+                                                FirstName = f.FirstName,
+                                                LastName = f.LastName,
+                                                Email = f.Email
+                                            })
+                                            .ToListAsync();
+
+                return View(farmers);
+            } else
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet]

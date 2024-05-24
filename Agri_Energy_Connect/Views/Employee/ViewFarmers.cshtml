@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "View Farmers";
 }
-
+@model IEnumerable<Agri_Energy_Connect.Models.FarmerViewModel>
 
 <div class="text-center">
     <h1 class="display-4">My Farmers</h1>
@@ -9,3 +9,39 @@
     <p>User ID: @ViewData["UserId"]</p>
     <p>User Role: @ViewData["UserRole"]</p>
 </div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center" role="alert">
+        No farmers available to display.
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var farmer in Model)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title" style="font-weight:700; font-size:1.6rem; color:darkseagreen">@farmer.FirstName @farmer.LastName</h5>
+                        <p class="card-text">
+                            <strong>Email:</strong> @farmer.Email
+                        </p>
+                        <form asp-action="DeleteProduct" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@farmer.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return customConfirm();">Delete</button>
+                            @Html.AntiForgeryToken()
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<script>
+    function customConfirm() {
+        return confirm('Are you sure you want to delete this product?');
+    }
+</script>

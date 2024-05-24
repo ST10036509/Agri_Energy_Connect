@@ -88,7 +88,7 @@ namespace Agri_Energy_Connect.Controllers
                 var roles = await _userManager.GetRolesAsync(user);
                 var userRole = roles.FirstOrDefault();
 
-                //store the user's ID and role in ViewData
+                //store the user's, first name, ID and role in ViewData
                 ViewData["UserId"] = user.Id;
                 ViewData["UserFirstName"] = user.FirstName;
                 ViewData["UserRole"] = userRole;
