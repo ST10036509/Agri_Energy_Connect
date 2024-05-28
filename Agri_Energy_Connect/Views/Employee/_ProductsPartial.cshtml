@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Agri_Energy_Connect.Models.ProductViewModel>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center" role="alert">
+        No products available to display.
+    </div>
+}
+else
+{
+    foreach (var product in Model)
+    {
+        <div class="col-md-12">
+            <div class="card mb-2 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title" style="font-weight:700; font-size:1.1rem; color:darkseagreen">@product.Name</h5>
+                    <p class="card-text">
+                        <strong>Category:</strong> @product.Category<br />
+                        <strong>Production Date:</strong> @product.ProductionDate.ToString("yyyy-MM-dd")
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+}

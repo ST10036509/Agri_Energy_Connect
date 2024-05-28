@@ -48,37 +48,6 @@ namespace Agri_Energy_Connect.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> ViewFarmers(string returnUrl = null)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user != null)
-            {
-                var roles = await _userManager.GetRolesAsync(user);
-                var userRole = roles.FirstOrDefault();
-
-                ViewData["UserId"] = user.Id;
-                ViewData["UserFirstName"] = user.FirstName;
-                ViewData["UserRole"] = userRole;
-
-                // Fetch farmers associated with the current employee
-                var farmers = await _context.Farmers
-                                            .Where(f => f.EmployeeId == user.Id)
-                                            .Select(f => new FarmerViewModel
-                                            {
-                                                Id = f.Id,
-                                                FirstName = f.FirstName,
-                                                LastName = f.LastName,
-                                                Email = f.Email
-                                            })
-                                            .ToListAsync();
-
-                return View(farmers);
-            } else
-            {
-                return NotFound();
-            }
-        }
-
         [HttpGet]
         public async Task<IActionResult> CreateFarmer(string returnUrl = null)
         {
@@ -174,6 +143,110 @@ namespace Agri_Energy_Connect.Controllers
 
         [BindProperty]
         public InputModel Input { get; set; }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteFarmer(string id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var farmer = await _context.Farmers
+                .FirstOrDefaultAsync(f => f.Id == id && f.EmployeeId == user.Id);
+
+            if (farmer == null)
+            {
+                return NotFound();
+            }
+
+            var products = _context.Products.Where(p => p.UserId == id);
+
+            _context.Products.RemoveRange(products);
+
+            _context.Farmers.Remove(farmer);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ViewFarmers));
+        }
+
+        public async Task<IActionResult> ViewFarmers(string farmerId, string category, DateTime? productionDate)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            //get the user's role
+            var roles = await _userManager.GetRolesAsync(user);
+            var userRole = roles.FirstOrDefault();
+
+            var farmers = await _context.Farmers
+                .Where(f => f.EmployeeId == user.Id)
+                .ToListAsync();
+
+            var viewModel = farmers.Select(f => new FarmerViewModel
+            {
+                Id = f.Id,
+                FirstName = f.FirstName,
+                LastName = f.LastName,
+                Email = f.Email,
+                Products = _context.Products.Where(p => p.UserId == f.Id).ToList()
+            }).ToList();
+
+            if (!string.IsNullOrEmpty(farmerId))
+            {
+                var selectedFarmer = viewModel.FirstOrDefault(f => f.Id == farmerId);
+                if (selectedFarmer != null)
+                {
+                    var products = selectedFarmer.Products.AsQueryable();
+
+                    if (!string.IsNullOrEmpty(category))
+                    {
+                        products = products.Where(p => p.Category == category);
+                    }
+
+                    if (productionDate.HasValue)
+                    {
+                        products = products.Where(p => p.ProductionDate.Date == productionDate.Value.Date);
+                    }
+
+                    selectedFarmer.Products = products.ToList();
+                    selectedFarmer.SelectedCategory = category;
+                    selectedFarmer.ProductionDate = productionDate;
+                }
+            }
+
+            ViewData["UserId"] = user.Id;
+            ViewData["UserRole"] = userRole; // Assuming you have a UserRole property
+
+            return View(viewModel);
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult FilterProducts(string farmerId, string category, DateTime? productionDate)
+        {
+            // Assuming you have a context or service to interact with the database
+            var products = _context.Products.Where(p => p.UserId == farmerId).AsQueryable();
+
+            if (!string.IsNullOrEmpty(category))
+            {
+                products = products.Where(p => p.Category == category);
+            }
+
+            if (productionDate.HasValue)
+            {
+                products = products.Where(p => p.ProductionDate.Date == productionDate.Value.Date);
+            }
+
+            var filteredProducts = products.ToList();
+
+            return PartialView("_ProductsPartial", filteredProducts);
+        }
     }
 
     public class InputModel

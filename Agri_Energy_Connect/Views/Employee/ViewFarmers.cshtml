@@ -6,8 +6,6 @@
 <div class="text-center">
     <h1 class="display-4">My Farmers</h1>
     <br />
-    <p>User ID: @ViewData["UserId"]</p>
-    <p>User Role: @ViewData["UserRole"]</p>
 </div>
 
 @if (!Model.Any())
@@ -15,33 +13,172 @@
     <div class="alert alert-info text-center" role="alert">
         No farmers available to display.
     </div>
-}
-else
-{
-    <div class="row">
-        @foreach (var farmer in Model)
-        {
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title" style="font-weight:700; font-size:1.6rem; color:darkseagreen">@farmer.FirstName @farmer.LastName</h5>
-                        <p class="card-text">
-                            <strong>Email:</strong> @farmer.Email
-                        </p>
-                        <form asp-action="DeleteProduct" method="post" class="d-inline">
-                            <input type="hidden" name="id" value="@farmer.Id" />
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return customConfirm();">Delete</button>
-                            @Html.AntiForgeryToken()
-                        </form>
+} else {
+        <div class="row">
+            @foreach (var farmer in Model)
+            {
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title" style="font-weight:700; font-size:1.6rem; color:darkseagreen">@farmer.FirstName @farmer.LastName</h5>
+                            <p class="card-text"><strong>Email:</strong> @farmer.Email</p>
+                            <form asp-action="DeleteFarmer" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@farmer.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return customConfirm();">Delete</button>
+                                @Html.AntiForgeryToken()
+                            </form>
+                            <a href="javascript:void(0);" onclick="toggleProducts('@farmer.Id');" class="btn btn-info btn-sm" style="color:white; background-color:#0d6efd; border-color:transparent">
+                                View Products
+                            </a>
+                        </div>
+
+                        <div id="products-@farmer.Id" class="product-section" style="display:none; justify-content:center; align-self:center">
+                            <br />
+                            <h3 style="text-align:center">@farmer.FirstName's Products:</h3>
+                            <hr />
+
+                            <div class="col-md-12">
+                                <div class="card mb-4 shadow-sm">
+                                    <div class="card-body">
+                                        <button class="btn btn-secondary mb-3" type="button" onclick="toggleFilterCard('@farmer.Id')">Toggle Filters</button>
+                                        <div id="filter-card-@farmer.Id" class="filter-card card mb-3" style="display:none;">
+                                            <div class="card-body">
+                                                <form method="get" class="form-inline mb-3" onsubmit="return filterProducts(event, '@farmer.Id');">
+                                                    <input type="hidden" name="farmerId" value="@farmer.Id" />
+                                                    <div class="form-group mr-2">
+                                                        <div class="form-floating mb-3">
+                                                            <select name="category" class="form-control" aria-label="category selection" aria-required="false">
+                                                                <option value="">All Categories</option>
+                                                                <option value="Fruits">Fruits</option>
+                                                                <option value="Vegetables">Vegetables</option>
+                                                                <option value="Herbs">Herbs</option>
+                                                                <option value="Dairy">Dairy</option>
+                                                                <option value="Meat and Poultry">Meat and Poultry</option>
+                                                                <option value="Grains and Legumes">Grains and Legumes</option>
+                                                                <option value="Other">Other</option>
+                                                            </select>
+                                                            <label for="category">Category</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group mr-2">
+                                                        <div class="form-floating mb-3">
+                                                            <input type="date" name="productionDate" id="productionDate-@farmer.Id" class="form-control" />
+                                                            <label for="productionDate-@farmer.Id" class="mr-2">Production Date:</label>
+                                                        </div>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Filter</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" id="products-list-@farmer.Id">
+                                @foreach (var product in farmer.Products)
+                                {
+                                    <div class="col-md-12">
+                                        <div class="card mb-2 shadow-sm">
+                                            <div class="card-body">
+                                                <h5 class="card-title" style="font-weight:700; font-size:1.1rem; color:darkseagreen">@product.Name</h5>
+                                                <p class="card-text">
+                                                    <strong>Category:</strong> @product.Category<br />
+                                                    <strong>Production Date:</strong> @product.ProductionDate.ToString("yyyy-MM-dd")
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        @* End of product list section *@
+                        </div>
+
+                        <div id="products-@farmer.Id" class="product-section" style="display:none; justify-content:center; align-self:center">
+                            <br />
+                            <h3 style="text-align:center">@farmer.FirstName's Products:</h3>
+                            <hr />
+
+                            @if (farmer.Products.Any())
+                            {
+                                <div class="row" id="products-list-@farmer.Id">
+                                    @foreach (var product in farmer.Products)
+                                    {
+                                        <div class="col-md-12">
+                                            <div class="card mb-2 shadow-sm">
+                                                <div class="card-body">
+                                                    <h5 class="card-title" style="font-weight:700; font-size:1.1rem; color:darkseagreen">@product.Name</h5>
+                                                    <p class="card-text">
+                                                        <strong>Category:</strong> @product.Category<br />
+                                                        <strong>Production Date:</strong> @product.ProductionDate.ToString("yyyy-MM-dd")
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info text-center" role="alert">
+                                    No products available to display.
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
-}
-
-<script>
-    function customConfirm() {
-        return confirm('Are you sure you want to delete this product?');
+            }
+        </div>
     }
-</script>
+<script>
+
+        function customConfirm() {
+            return confirm('Are you sure you want to delete this farmer?');
+        }
+
+        function toggleProducts(farmerId) {
+            const selectedSection = document.getElementById(`products-${farmerId}`);
+            const allSections = document.querySelectorAll('.product-section');
+
+            allSections.forEach(section => {
+                if (section !== selectedSection) {
+                    section.style.display = 'none';
+                }
+            });
+
+            if (selectedSection.style.display === 'none' || selectedSection.style.display === '') {
+                selectedSection.style.display = 'block';
+            } else {
+                selectedSection.style.display = 'none';
+            }
+        }
+
+        function toggleFilterCard(farmerId) {
+            const filterCard = document.getElementById(`filter-card-${farmerId}`);
+            if (filterCard.style.display === 'none' || filterCard.style.display === '') {
+                filterCard.style.display = 'block';
+            } else {
+                filterCard.style.display = 'none';
+            }
+        }
+
+        function filterProducts(event, farmerId) {
+            event.preventDefault();
+
+            const category = document.querySelector(`#filter-card-${farmerId} select[name='category']`).value;
+            const productionDate = document.querySelector(`#filter-card-${farmerId} input[name='productionDate']`).value;
+
+            fetch(`/Employee/FilterProducts`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+            body: JSON.stringify({ farmerId, category, productionDate: productionDate ? new Date(productionDate).toISOString() : null })
+            })
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById(`products-list-${farmerId}`).innerHTML = html;
+                })
+                .catch(err => console.error('Error:', err));
+        }
+    </script>
