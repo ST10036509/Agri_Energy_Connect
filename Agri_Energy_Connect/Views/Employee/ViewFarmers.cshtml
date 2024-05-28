@@ -29,7 +29,10 @@ else
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return customConfirm();">Delete</button>
                             @Html.AntiForgeryToken()
                         </form>
-                        <a href="javascript:void(0);" onclick="toggleProducts('@farmer.Id');" class="btn btn-info btn-sm" style="color:white; background-color:#0d6efd; border-color:transparent">
+                        <a href="javascript:void(0);" onclick="toggleProducts('@farmer.Id');" class="btn btn-info btn-sm toggle-arrow" style="color:white; background-color:#0d6efd; border-color:transparent">
+                            <span class="arrow-icon" id="arrow-icon-@farmer.Id">
+                                <i class="fas fa-angle-up"></i>
+                            </span>
                             View Products
                         </a>
                     </div>
@@ -45,10 +48,15 @@ else
                                 <div class="col-md-10">
                                     <div class="card mb-4 shadow-sm">
                                         <div class="card-body">
-                                            <button class="btn btn-secondary w-100" type="button" onclick="toggleFilterCard('@farmer.Id')">Toggle Filters</button>
+                                            <button class="btn btn-secondary w-100  toggle-arrow" type="button" onclick="toggleFilterCard('@farmer.Id')">
+                                                <span class="arrow-icon" id="filter-arrow-icon-@farmer.Id">
+                                                    <i class="fas fa-angle-up"></i>
+                                                </span>
+                                                Toggle Filters
+                                            </button>
                                             <div id="filter-card-@farmer.Id" class="filter-card mb-3" style="display:none;">
                                                 <div class="card-body">
-                                                    <form method="post" action="/Employee/FilterProducts" class="form-inline mb-3" onsubmit="return filterProducts(event, '@farmer.Id');">
+                                                    <form method="post" action="/Employee/FilterProducts" class="form-inline" onsubmit="return filterProducts(event, '@farmer.Id');">
                                                         @Html.AntiForgeryToken()
                                                         <input type="hidden" name="farmerId" value="@farmer.Id" />
                                                         <div class="form-group w-100 mb-3">
@@ -87,8 +95,8 @@ else
                                         {
                                             <div class="col-md-10">
                                                 <div class="card mb-2 shadow-sm">
-                                                    <div class="card-body">
-                                                        <h5 class="card-title" style="font-weight:700; font-size:1.1rem; color:darkseagreen">@product.Name</h5>
+                                                    <div class="card-body" style="background-color: #cff4fc">
+                                                        <h5 class="card-title" style="font-weight:700; font-size:1.2rem; color:black">@product.Name</h5>
                                                         <p class="card-text">
                                                             <strong>Category:</strong> @product.Category<br />
                                                             <strong>Production Date:</strong> @product.ProductionDate.ToString("yyyy-MM-dd")
@@ -131,6 +139,7 @@ else
 
     function toggleProducts(farmerId) {
         const selectedSection = document.getElementById(`products-${farmerId}`);
+        const arrowIcon = document.getElementById(`arrow-icon-${farmerId}`);
         const allSections = document.querySelectorAll('.product-section');
 
         allSections.forEach(section => {
@@ -141,17 +150,23 @@ else
 
         if (selectedSection.style.display === 'none' || selectedSection.style.display === '') {
             selectedSection.style.display = 'block';
+            arrowIcon.innerHTML = '<i class="fas fa-angle-down"></i>';
         } else {
             selectedSection.style.display = 'none';
+            arrowIcon.innerHTML = '<i class="fas fa-angle-up"></i>';
         }
     }
 
     function toggleFilterCard(farmerId) {
+        const arrowIcon = document.getElementById(`filter-arrow-icon-${farmerId}`);
         const filterCard = document.getElementById(`filter-card-${farmerId}`);
+
         if (filterCard.style.display === 'none' || filterCard.style.display === '') {
             filterCard.style.display = 'block';
+            arrowIcon.innerHTML = '<i class="fas fa-angle-down"></i>';
         } else {
             filterCard.style.display = 'none';
+            arrowIcon.innerHTML = '<i class="fas fa-angle-up"></i>';
         }
     }
 

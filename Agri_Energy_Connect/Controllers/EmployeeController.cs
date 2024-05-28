@@ -229,18 +229,15 @@ namespace Agri_Energy_Connect.Controllers
         [HttpPost]
         public IActionResult FilterProducts(string farmerId, string category, DateTime? productionDate)
         {
-            // Fetch products for the given farmer
             var productsQuery = _context.Products
                                         .Where(p => p.UserId == farmerId)
                                         .AsQueryable();
 
-            // Apply category filter if provided
             if (!string.IsNullOrEmpty(category))
             {
                 productsQuery = productsQuery.Where(p => p.Category == category);
             }
 
-            // Apply production date filter if provided
             if (productionDate.HasValue)
             {
                 productsQuery = productsQuery.Where(p => p.ProductionDate.Date == productionDate.Value.Date);
