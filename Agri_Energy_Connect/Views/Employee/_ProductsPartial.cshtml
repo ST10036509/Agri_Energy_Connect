@@ -1,16 +1,10 @@
-﻿@model IEnumerable<Agri_Energy_Connect.Models.ProductViewModel>
+﻿@model Agri_Energy_Connect.Models.FarmerViewModel
 
-@if (!Model.Any())
+@if (Model.Products.Any())
 {
-    <div class="alert alert-info text-center" role="alert">
-        No products available to display.
-    </div>
-}
-else
-{
-    foreach (var product in Model)
+    @foreach (var product in Model.Products)
     {
-        <div class="col-md-12">
+        <div class="col-md-10">
             <div class="card mb-2 shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title" style="font-weight:700; font-size:1.1rem; color:darkseagreen">@product.Name</h5>
@@ -22,4 +16,12 @@ else
             </div>
         </div>
     }
+}
+else
+{
+    <div class="col-10">
+        <div class="alert alert-info text-center" role="alert">
+            No products available to display.
+        </div>
+    </div>
 }

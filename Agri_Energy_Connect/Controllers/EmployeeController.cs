@@ -221,31 +221,40 @@ namespace Agri_Energy_Connect.Controllers
             }
 
             ViewData["UserId"] = user.Id;
-            ViewData["UserRole"] = userRole; // Assuming you have a UserRole property
+            ViewData["UserRole"] = userRole;
 
             return View(viewModel);
         }
 
-        [ValidateAntiForgeryToken]
         [HttpPost]
         public IActionResult FilterProducts(string farmerId, string category, DateTime? productionDate)
         {
-            // Assuming you have a context or service to interact with the database
-            var products = _context.Products.Where(p => p.UserId == farmerId).AsQueryable();
+            // Fetch products for the given farmer
+            var productsQuery = _context.Products
+                                        .Where(p => p.UserId == farmerId)
+                                        .AsQueryable();
 
+            // Apply category filter if provided
             if (!string.IsNullOrEmpty(category))
             {
-                products = products.Where(p => p.Category == category);
+                productsQuery = productsQuery.Where(p => p.Category == category);
             }
 
+            // Apply production date filter if provided
             if (productionDate.HasValue)
             {
-                products = products.Where(p => p.ProductionDate.Date == productionDate.Value.Date);
+                productsQuery = productsQuery.Where(p => p.ProductionDate.Date == productionDate.Value.Date);
             }
 
-            var filteredProducts = products.ToList();
+            var products = productsQuery.ToList();
 
-            return PartialView("_ProductsPartial", filteredProducts);
+            var model = new FarmerViewModel
+            {
+                Id = farmerId,
+                Products = products
+            };
+
+            return PartialView("_ProductsPartial", model);
         }
     }
 
