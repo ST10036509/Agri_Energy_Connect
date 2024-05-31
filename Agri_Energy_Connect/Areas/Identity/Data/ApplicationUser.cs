@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Agri_Energy_Connect.Areas.Identity.Data;
 
-// Add profile data for application users by adding properties to the ApplicationUser class
+//profile data for application users
 public class ApplicationUser : IdentityUser
 {
     [PersonalData]

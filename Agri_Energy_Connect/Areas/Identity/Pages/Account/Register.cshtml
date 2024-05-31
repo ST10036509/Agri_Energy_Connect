@@ -1,10 +1,12 @@
 ﻿@page
+<! model -->
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
     Layout = "~/Areas/Identity/Pages/_AuthLayout.cshtml";
 }
-
+<! Register Page -->
+<! Regitser Input Form -->
 <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
     <h2>Create a new account.</h2>
     <hr />
@@ -54,3 +56,4 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+<! END OF FILE -->

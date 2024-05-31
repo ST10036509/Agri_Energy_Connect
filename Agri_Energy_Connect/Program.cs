@@ -9,12 +9,12 @@ var connectionString = builder.Configuration.GetConnectionString("AuthDbContextC
 builder.Services.AddDbContext<AuthDbContext>(options => options.UseSqlite(connectionString));
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddRoles<IdentityRole>()
+    .AddRoles<IdentityRole>()//enable roles with Identity UI
     .AddEntityFrameworkStores<AuthDbContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages();//add razor pages service
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -36,6 +36,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
+app.MapRazorPages();//add papping for razorpages
 
 app.Run();

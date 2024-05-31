@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Agri_Energy_Connect.Data;
 
+/// <summary>
+/// Database context for databse access
+/// </summary>
 public class AuthDbContext : IdentityDbContext<ApplicationUser>
 {
     public AuthDbContext(DbContextOptions<AuthDbContext> options)

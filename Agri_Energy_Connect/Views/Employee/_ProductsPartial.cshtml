@@ -1,7 +1,11 @@
 ﻿@model Agri_Energy_Connect.Models.FarmerViewModel
 
+<! Middleware View for displaying products -->
+
+<! Check if a model has any products -->
 @if (Model.Products.Any())
 {
+    <! build a component and display for each product -->
     @foreach (var product in Model.Products)
     {
         <div class="col-md-10">
@@ -19,9 +23,11 @@
 }
 else
 {
+    <! diplay alert if no products found -->
     <div class="col-10">
         <div class="alert alert-info text-center" role="alert">
             No products available to display.
         </div>
     </div>
 }
+<! END OF FILE -->

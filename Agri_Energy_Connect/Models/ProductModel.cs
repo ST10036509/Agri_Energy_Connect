@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Agri_Energy_Connect.Models
 {
+    /// <summary>
+    /// Model for product data
+    /// </summary>
     public class ProductModel
     {
         public int Id { get; set; }
@@ -21,3 +24,4 @@ namespace Agri_Energy_Connect.Models
         public DateTime ProductionDate { get; set; }
     }
 }
+//---------------....oooOO0_END_OF_FILE_0OOooo....---------------\\

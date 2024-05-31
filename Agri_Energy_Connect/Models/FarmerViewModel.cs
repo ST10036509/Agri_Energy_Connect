@@ -2,6 +2,10 @@
 
 namespace Agri_Energy_Connect.Models
 {
+
+    /// <summary>
+    /// Model for farmer data
+    /// </summary>
     public class FarmerViewModel
     {
         public string Id { get; set; }
@@ -15,3 +19,4 @@ namespace Agri_Energy_Connect.Models
         public DateTime? ProductionDate { get; set; }
     }
 }
+//---------------....oooOO0_END_OF_FILE_0OOooo....---------------\\

@@ -7,6 +7,7 @@ using System.Diagnostics;
 
 namespace Agri_Energy_Connect.Controllers
 {
+    //lock access to logged in users only
     [Authorize]
     public class HomeController : Controller
     {
@@ -14,13 +15,24 @@ namespace Agri_Energy_Connect.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="userManager"></param>
+        /// <param name="signInManager"></param>
         public HomeController(ILogger<HomeController> logger, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
+            //setup logger and managers
             _logger = logger;
             this._userManager=userManager;
             this._signInManager=signInManager;
         }
 
+        /// <summary>
+        /// Index Event Handler
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             //get the current user
@@ -40,11 +52,19 @@ namespace Agri_Energy_Connect.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Privacy Event Handler
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Privacy()
         {
             return View();
         }
 
+        /// <summary>
+        /// Error Event Handler
+        /// </summary>
+        /// <returns></returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -52,3 +72,4 @@ namespace Agri_Energy_Connect.Controllers
         }
     }
 }
+//---------------....oooOO0_END_OF_FILE_0OOooo....---------------\\

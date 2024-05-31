@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Agri_Energy_Connect.Controllers
 {
+    //lock controller and actions to Farmer role users only
     [Authorize(Roles = "Farmer")]
     public class FarmerController : Controller
     {
@@ -15,6 +16,14 @@ namespace Agri_Energy_Connect.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly AuthDbContext _context;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="userManager"></param>
+        /// <param name="signInManager"></param>
+        /// <param name="context"></param>
         public FarmerController(
             ILogger<HomeController> logger,
             UserManager<ApplicationUser> userManager,
@@ -27,6 +36,10 @@ namespace Agri_Energy_Connect.Controllers
             this._context = context;
         }
 
+        /// <summary>
+        /// Create Product Inital Event
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> CreateProduct()
         {
             //get the current user
@@ -45,15 +58,24 @@ namespace Agri_Energy_Connect.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Cretae Product Event Handler
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateProduct(ProductModel product)
         {
+            //temporarily remove the UserId from the model state
             ModelState.Remove(nameof(ProductModel.UserId));
 
+            //check if the model state is valid 
             if (!ModelState.IsValid)
             {
+                //if there is no model state get a list of errors
                 var errors = ModelState.Values.SelectMany(v => v.Errors);
+                //log each error
                 foreach (var error in errors)
                 {
                     _logger.LogError(error.ErrorMessage);
@@ -61,9 +83,12 @@ namespace Agri_Energy_Connect.Controllers
                 return View(product);
             }
 
+            //if there is a valid model
             if (ModelState.IsValid)
             {
+                //get the current user
                 var user = await _userManager.GetUserAsync(User);
+                //if the user exists
                 if (user != null)
                 {
                     //assign the user's ID to the product
@@ -78,6 +103,11 @@ namespace Agri_Energy_Connect.Controllers
             return View(product);
         }
 
+
+        /// <summary>
+        /// View Products Event Handler
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> ViewProducts()
         {
             //get the current user
@@ -93,6 +123,7 @@ namespace Agri_Energy_Connect.Controllers
                 ViewData["UserFirstName"] = user.FirstName;
                 ViewData["UserRole"] = userRole;
 
+                //get the list of products that related to the current user and pass to a list
                 var products = await _context.Products
                 .Where(p => p.UserId == user.Id)
                 .Select(p => new ProductViewModel
@@ -111,28 +142,40 @@ namespace Agri_Energy_Connect.Controllers
             }
         }
 
+        /// <summary>
+        /// Delete Product Event Handler
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteProduct(int id)
         {
+            //get current user
             var user = await _userManager.GetUserAsync(User);
+            //check if the user exists
             if (user == null)
             {
-                return NotFound();
+                return NotFound();//error out
             }
 
+            //find the selected product in the database
             var product = await _context.Products
                 .FirstOrDefaultAsync(p => p.Id == id && p.UserId == user.Id);
 
+            //check if the product exsists
             if (product == null)
             {
-                return NotFound();
+                return NotFound();//error out
             }
 
+            //delete the product
             _context.Products.Remove(product);
+            //update the database
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(ViewProducts));
         }
     }
 }
+//---------------....oooOO0_END_OF_FILE_0OOooo....---------------\\
